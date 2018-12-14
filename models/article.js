@@ -5,7 +5,7 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var ArticleSchema = new Schema({
-    headline: {
+    title: {
         type: String,
         required: true,
     },
@@ -13,7 +13,7 @@ var ArticleSchema = new Schema({
         type: String,
         required: true,    
     },
-    url : {
+    link : {
         type: String,
         required: true
     },

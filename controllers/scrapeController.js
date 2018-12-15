@@ -7,8 +7,8 @@ var axios = require("axios");
 
 var router = express.Router();
 
-// var Note = require("../models/note.js");
-// var Article = require("../models/article.js");
+var Note = require("../models/note.js");
+var Article = require("../models/article.js");
 
 var db = require("../models");
 

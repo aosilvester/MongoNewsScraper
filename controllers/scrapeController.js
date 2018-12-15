@@ -21,12 +21,29 @@ console.log("connected to the scrape controller");
 
 // routes
 router.get("/", function (req, res) {
-    res.render("index");
-
+    // res.render("index");
+    // GET all articles
+    db.Article.find({})
+    .then(function(dbArticle){
+        console.log(dbArticle.length);
+        res.render("index", {articles: dbArticle});
+    })
+    // create handlebars object
+    // res.render(index, handlebars object)
 });
 
 router.get("/savedarticles", function (req, res) {
-    res.render("savedArticles");
+    // res.render("savedArticles", function(){
+    //     db.Article.find({})
+    //     .then(function (dbArticle) {
+    //         // If we were able to successfully find Articles, send them back to the client
+    //         res.json(dbArticle);
+    //     })
+    //     .catch(function (err) {
+    //         // If an error occurred, send it to the client
+    //         res.json(err);
+    //     });
+    // });
 })
 // GET route
 
@@ -36,11 +53,11 @@ router.post("/scrape", function (req, res) {
     axios.get("http://www.nytimes.com").then(function (response) {
         // Then, we load that into cheerio and save it to $ for a shorthand selector
         var $ = cheerio.load(response.data);
-
+        var articlesNYT = [];
         // Now, we grab every h2 within an article tag, and do the following:
         $("h2.css-bzeb53").each(function (i, element) {
             // Save an empty result object
-            var result = {};
+            var result = {}
 
             // 
 
@@ -58,13 +75,15 @@ router.post("/scrape", function (req, res) {
                 .children("ul.css-1rrs2s3")
                 .text("li");
 
-            console.log(result);
+            // console.log(result);
+            // push result to articlesNYT array
+            articlesNYT.push(result);
 
             // Create a new Article using the `result` object built from scraping
             db.Article.create(result)
                 .then(function (dbArticle) {
                     // View the added result in the console
-                    console.log(dbArticle);
+                    // console.log(dbArticle);
                 })
                 .catch(function (err) {
                     // If an error occurred, log it
@@ -73,7 +92,10 @@ router.post("/scrape", function (req, res) {
         });
 
         // Send a message to the client
+
+        console.log(articlesNYT);
         res.send("Scrape Complete");
+        // res.render("index", {articles: articlesNYT});
     });
 });
 // res.render(console.log("hello"));
@@ -81,16 +103,7 @@ router.post("/scrape", function (req, res) {
 
 // Route for getting all Articles from the db
 router.get("/articles", function (req, res) {
-    // Grab every document in the Articles collection
-    db.Article.find({})
-        .then(function (dbArticle) {
-            // If we were able to successfully find Articles, send them back to the client
-            res.json(dbArticle);
-        })
-        .catch(function (err) {
-            // If an error occurred, send it to the client
-            res.json(err);
-        });
+    // res.render("articles");
 });
 
 // Route for grabbing a specific Article by id, populate it with it's note
